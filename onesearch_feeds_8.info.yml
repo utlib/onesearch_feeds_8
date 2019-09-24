@@ -1,0 +1,6 @@
+name: Onesearch Feeds
+description: D8 version of Onesearch Feeds module.
+package: UTL
+type: module
+version: 1.0
+core: 8.x
