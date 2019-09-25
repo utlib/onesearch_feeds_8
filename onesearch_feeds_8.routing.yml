@@ -16,3 +16,10 @@ onesearch_feeds_8.searchoptionsettings:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+onesearch_feeds_8.search_results:
+  path: '/onesearch'
+  defaults:
+    _controller: '\Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::render_page'
+    _title: 'Onesearch Results'
+  requirements:
+    _permission: 'access content'

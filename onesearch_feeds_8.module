@@ -1,0 +1,9 @@
+<?php
+
+    function onesearch_feeds_8_theme($existing, $type, $theme, $path) {
+        return [
+            'onesearch_results' => [
+                'template' => 'onesearch_results'
+            ]
+            ];
+    }
