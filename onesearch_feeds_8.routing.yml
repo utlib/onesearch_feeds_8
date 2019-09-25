@@ -7,3 +7,12 @@ onesearch_feeds_8.admin_settings_form:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+onesearch_feeds_8.searchoptionsettings:
+  path: '/admin/config/onesearch_feeds_8/search_option'
+  defaults:
+    _form: '\Drupal\onesearch_feeds_8\Form\OnesearchFeeds8SearchOptionsForm'
+    _title: 'Search Options'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

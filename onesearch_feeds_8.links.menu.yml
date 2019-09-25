@@ -1,0 +1,6 @@
+onesearch_feeds_8.admin_settings_form:
+  title: 'Onesearch Feeds'
+  route_name: onesearch_feeds_8.admin_settings_form
+  decription: 'Onesearch Feeds Configuration'
+  parent: 'system.admin_config_search'
+  weight: 99

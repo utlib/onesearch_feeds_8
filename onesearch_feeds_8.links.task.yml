@@ -1,0 +1,9 @@
+onesearch_feeds_8.index_task:
+  route_name: onesearch_feeds_8.admin_settings_form
+  title: 'Articles'
+  base_route: onesearch_feeds_8.admin_settings_form
+
+onesearch_feeds_8.search_options_settings_task:
+  route_name: onesearch_feeds_8.searchoptionsettings
+  title: 'Search Options'
+  base_route: onesearch_feeds_8.admin_settings_form
