@@ -1,0 +1,25 @@
+# onesearch_feeds_8.libraries.yml
+
+react:
+  js:
+    https://unpkg.com/react@16/umd/react.production.min.js:
+      external: true
+    https://unpkg.com/react-dom@16/umd/react-dom.production.min.js:
+      external: true
+    https://unpkg.com/browse/axios@0.18.1/dist/axios.min.js:
+      external: true
+    https://unpkg.com/babel-standalone@6.15.0/babel.min.js:
+      external: true
+react-dev:
+  js:
+    https://unpkg.com/react@16/umd/react.development.js:
+      external: true
+    https://unpkg.com/react-dom@16/umd/react-dom.development.js:
+      external: true
+    https://unpkg.com/browse/axios@0.18.1/dist/axios.js:
+      external: true
+    https://unpkg.com/babel-standalone@6.15.0/babel.min.js:
+      external: true
+onesearch:
+  js:
+    app/build/onesearch_feeds.js: {}
