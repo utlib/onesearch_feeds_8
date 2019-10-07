@@ -10,10 +10,11 @@ class OnesearchFeeds8Controller extends ControllerBase {
         $config = \Drupal::config('onesearch_feeds_8.searchoptionsettings');
 
         $books_enabled = $config->get('onesearch_feeds_8_books_enabled');
+        $journal_enabled = $config->get('onesearch_feeds_8_catalogue_enabled');
 
         return [
             '#attached' => [
-                'drupalSettings' => ['books_enabled' => $books_enabled],
+                'drupalSettings' => ['books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled],
                 'library' =>  ['onesearch_feeds_8/react-dev', 'onesearch_feeds_8/onesearch']
             ],
             '#theme' => 'onesearch_results'
