@@ -10,6 +10,8 @@ react:
       external: true
     https://unpkg.com/babel-standalone@6.15.0/babel.min.js:
       external: true
+    https://unpkg.com/browse/react-router-dom@4.3.1/umd/react-router-dom.min.js:
+      external: true
 react-dev:
   js:
     https://unpkg.com/react@16/umd/react.development.js:
@@ -20,6 +22,9 @@ react-dev:
       external: true
     https://unpkg.com/babel-standalone@6.15.0/babel.min.js:
       external: true
+    https://unpkg.com/browse/react-router-dom@4.3.1/umd/react-router-dom.js:
+      external: true
+
 onesearch:
   js:
     app/build/onesearch_feeds.js: {}
