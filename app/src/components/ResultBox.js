@@ -8,7 +8,7 @@ export const ResultBox = (props) => {
             <div className="result-box" id="book_results">
             <header>
                 <div>
-                    <h2>{props.heading} {props.items_count}</h2>
+                    <h2>{ props.is_online ? 'Online': ''} {props.heading} {props.items_count}</h2>
                 </div>
             </header>
             <ul>

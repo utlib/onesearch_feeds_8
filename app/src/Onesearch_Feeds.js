@@ -11,8 +11,6 @@ class Onesearch_Feeds extends Component {
 
     this.state = {
       performSearch: this.performSearch,
-      onesearch_online: false,
-      onesearch_title_only: false,
       kw: '',
       updateKW: this.updateKW,
       handleCheckBoxChange: this.handleCheckBoxChange,
@@ -23,16 +21,18 @@ class Onesearch_Feeds extends Component {
       books_count: 0,
       books_result: [],
       journal_count: 0,
-      journal_result: []
+      journal_result: [],
+      is_online_clicked: false
     }
   }
 
   performSearch = (e) => {
     e.preventDefault();
-
-
+    var online_checked = e.target.onesearch_online.checked;
+    this.setState({is_online_clicked: online_checked})
+    var title_only_checked = e.target.onesearch_title_only.checked;
     if (this.state.books_enabled) {
-      axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${this.state.onesearch_online}`).then((res) => {
+      axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}`).then((res) => {
         this.setState({books_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({books_result: res.data.result.records});
@@ -42,7 +42,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if (this.state.journal_enabled) {
-      axios.get(`http://localhost:8002/journal_article.php?kw=${this.state.kw}&online=${this.state.onesearch_online}`).then((res) => {
+      axios.get(`http://localhost:8002/journal_article.php?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}`).then((res) => {
         this.setState({journal_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({journal_result: res.data.result.records});
@@ -75,8 +75,8 @@ class Onesearch_Feeds extends Component {
       <div className="App">
       <OnesearchProvider value={this.state}>
         <SearchArea />
-        {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} />}
-        {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} />}
+        {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} is_online={this.state.is_online_clicked} />}
+        {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} is_online={this.state.is_online_clicked} />}
         </OnesearchProvider>
         
       </div>
