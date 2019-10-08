@@ -11,8 +11,11 @@ class Onesearch_Feeds extends Component {
 
     this.state = {
       performSearch: this.performSearch,
+      onesearch_online: false,
+      onesearch_title_only: false,
       kw: '',
       updateKW: this.updateKW,
+      handleCheckBoxChange: this.handleCheckBoxChange,
       books_enabled: false,
       journal_enabled: false,
       render_books: false,
@@ -29,8 +32,7 @@ class Onesearch_Feeds extends Component {
 
 
     if (this.state.books_enabled) {
-      
-      axios.get(`http://localhost:8002/?kw=${this.state.kw}`).then((res) => {
+      axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${this.state.onesearch_online}`).then((res) => {
         this.setState({books_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({books_result: res.data.result.records});
@@ -40,7 +42,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if (this.state.journal_enabled) {
-      axios.get(`http://localhost:8002/journal_article.php?kw=${this.state.kw}`).then((res) => {
+      axios.get(`http://localhost:8002/journal_article.php?kw=${this.state.kw}&online=${this.state.onesearch_online}`).then((res) => {
         this.setState({journal_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({journal_result: res.data.result.records});
@@ -52,6 +54,13 @@ class Onesearch_Feeds extends Component {
 
   updateKW = (e) => {
     this.setState({kw : e.target.value});
+  }
+
+  handleCheckBoxChange = (e) => {
+    var name = e.target.name;
+    this.setState( {
+      [name]: e.target.checked
+    })
   }
 
   componentDidMount() {
