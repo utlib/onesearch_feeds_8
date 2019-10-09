@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import axios from "axios";
 import { OnesearchProvider } from "./OnesearchContext";
 import SearchArea from './components/SearchArea';

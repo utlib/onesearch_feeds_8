@@ -1,0 +1,15 @@
+div#result_area {
+    display: flex;
+
+    div#catalogue_list{
+        flex-basis:70%;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    div#library_info {
+        flex-basis: 28%;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
