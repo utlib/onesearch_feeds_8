@@ -139,7 +139,7 @@ class Onesearch_Feeds extends Component {
             {(this.state.other_format_list.length > 0 && this.state.formats_enabled)  && <FormatBox items_list={this.state.other_format_list} />}
           </div>
           <div id='library_info'>
-            {(this.state.guides_enabled && this.state.guides_result.length > 0) && <GuidesBox items_list={this.state.guides_result} />}
+            {(this.state.guides_enabled && this.state.guides_result.length > 0) && <GuidesBox items_list={this.state.guides_result} kw={this.state.kw} />}
           </div>
         </div>
         </OnesearchProvider>

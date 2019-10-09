@@ -4,11 +4,11 @@ import { ResultDescription } from './ResultDescription';
 export const ResultBox = (props) => {
 
     return (
-        <div className="box books-box books endeca_box" id="books">
+        <div className="box endeca_box">
             <div className="result-box" id="book_results">
             <header>
                 <div>
-                    <h2>{ props.is_online ? 'Online': ''} {props.heading} {props.items_count}</h2>
+                    <h2>{ props.is_online ? 'Online': ''} {props.heading} <span>{props.items_count}</span></h2>
                 </div>
             </header>
             <ul>

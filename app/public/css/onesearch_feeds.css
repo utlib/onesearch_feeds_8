@@ -8,3 +8,26 @@ div#result_area {
     flex-basis: 28%;
     flex-grow: 0;
     flex-shrink: 0; }
+
+.box h2 span {
+  font-size: .7em !important;
+  color: black; }
+
+.box li {
+  list-style-type: none;
+  margin: 5px 0;
+  padding: 5px 0;
+  clear: both;
+  width: 100%; }
+
+.box footer {
+  padding: 4px 0px;
+  margin-top: auto;
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: right; }
+  .box footer a {
+    background: whitesmoke;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    font-size: 0.9em; }

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 export const GuidesBox = (props) => {
 
     return (
-        <div className="box books-box books endeca_box" id="books">
-            <div className="result-box" id="book_results">
+        <div className="box guides" id="guides">
+            <div className="result-box" id="guides_results">
             <header>
                 <div>
                     <h2>Research Guides</h2>
@@ -16,6 +16,10 @@ export const GuidesBox = (props) => {
                 </li>)}
 
             </ul>
+            <footer>
+            <a href={`http://guides.library.utoronto.ca/srch.php?q=${props.kw}`} className="view_more_guides">All guides</a>
+            </footer>
+            
             </div>
         </div>
     )
