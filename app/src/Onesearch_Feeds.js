@@ -5,6 +5,7 @@ import { OnesearchProvider } from "./OnesearchContext";
 import SearchArea from './components/SearchArea';
 import { ResultBox }  from './components/ResultBox';
 import { FormatBox }  from './components/FormatBox';
+import { GuidesBox }  from './components/GuidesBox';
 
 class Onesearch_Feeds extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class Onesearch_Feeds extends Component {
     this.state = {
       performSearch: this.performSearch,
       kw: '',
+      items_per_block: '',
       updateKW: this.updateKW,
       handleCheckBoxChange: this.handleCheckBoxChange,
       books_enabled: false,
@@ -21,14 +23,19 @@ class Onesearch_Feeds extends Component {
       render_books: false,
       render_journal: false,
       next_most_format: '',
+      guides_enabled: 0,
       books_count: 0,
       books_result: [],
       journal_count: 0,
       journal_result: [],
+      guides_result: [],
       is_online_clicked: false,
       other_format_list: [],
       next_most_format_list: [],
-      next_most_format_count: 0
+      next_most_format_count: 0,
+      libguides_site_id: '',
+      libguides_api_key: '',
+      libguides_group_id: ''
     }
   }
 
@@ -86,6 +93,14 @@ class Onesearch_Feeds extends Component {
         });  
       });      
     }
+
+    if(this.state.guides_enabled) {
+      axios.get(`//lgapi-ca.libapps.com/1.1/guides?search_match=2&status=1&site_id=${this.state.libguides_site_id}&key=${this.state.libguides_api_key}&search_terms=${this.state.kw}`).then((res) => {
+      
+      this.setState({guides_result: res.data.splice(0,this.state.items_per_block)});
+      })
+    }
+ 
   }
 
   updateKW = (e) => {
@@ -102,9 +117,14 @@ class Onesearch_Feeds extends Component {
   componentDidMount() {
     var settingsElement = document.querySelector('head > script[type="application/json"][data-drupal-selector="drupal-settings-json"], body > script[type="application/json"][data-drupal-selector="drupal-settings-json"]');
     var drupal_settings_json = JSON.parse(settingsElement.textContent);
+    this.setState({items_per_block: drupal_settings_json.items_per_block});
     this.setState({books_enabled: drupal_settings_json.books_enabled});
     this.setState({journal_enabled: drupal_settings_json.journal_enabled});
     this.setState({formats_enabled: drupal_settings_json.formats_enabled});
+    this.setState({guides_enabled: drupal_settings_json.guides_enabled});
+    this.setState({libguides_site_id: drupal_settings_json.libguides_site_id});
+    this.setState({libguides_api_key: drupal_settings_json.libguides_api_key});
+    this.setState({libguides_group_id: drupal_settings_json.libguides_group_id});
   }
 
   render() {
@@ -112,10 +132,17 @@ class Onesearch_Feeds extends Component {
       <div className="App">
       <OnesearchProvider value={this.state}>
         <SearchArea />
-        {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} is_online={this.state.is_online_clicked} />}
-        {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} is_online={this.state.is_online_clicked} />}
-        {(this.state.next_most_format_count > 0 && this.state.formats_enabled)  && <ResultBox heading={this.state.next_most_format} items_count={this.state.next_most_format_count} items_list={this.state.next_most_format_list} is_online={this.state.is_online_clicked} />}
-        {(this.state.other_format_list.length > 0 && this.state.formats_enabled)  && <FormatBox items_list={this.state.other_format_list} />}
+        <div id='result_area'>
+          <div id='catalogue_list'>
+            {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} is_online={this.state.is_online_clicked} />}
+            {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} is_online={this.state.is_online_clicked} />}
+            {(this.state.next_most_format_count > 0 && this.state.formats_enabled)  && <ResultBox heading={this.state.next_most_format} items_count={this.state.next_most_format_count} items_list={this.state.next_most_format_list} is_online={this.state.is_online_clicked} />}
+            {(this.state.other_format_list.length > 0 && this.state.formats_enabled)  && <FormatBox items_list={this.state.other_format_list} />}
+          </div>
+          <div id='library_info'>
+            {(this.state.guides_enabled && this.state.guides_result.length > 0) && <GuidesBox items_list={this.state.guides_result} />}
+          </div>
+        </div>
         </OnesearchProvider>
         
       </div>
