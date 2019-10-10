@@ -14,6 +14,7 @@ class OnesearchFeeds8Controller extends ControllerBase {
         $journal_enabled = $config->get('onesearch_feeds_8_catalogue_enabled');
         $formats_enabled = $config->get('onesearch_feeds_8_formats_enabled');
         $guides_enabled = $config->get('onesearch_feeds_8_guides_enabled');
+        $summon_enabled = $config->get('onesearch_feeds_8_summon_enabled');
 
         $admin_config = \Drupal::config('onesearch_feeds_8.adminsettings');
         $items_per_block = $admin_config->get('onesearch_feeds_8_number_of_articles');
@@ -23,7 +24,7 @@ class OnesearchFeeds8Controller extends ControllerBase {
 
         return [
             '#attached' => [
-                'drupalSettings' => ['items_per_block' => $items_per_block, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
+                'drupalSettings' => ['items_per_block' => $items_per_block, 'summon_enabled' => $summon_enabled, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
                 'library' =>  ['onesearch_feeds_8/react-dev', 'onesearch_feeds_8/onesearch']
             ],
             '#theme' => 'onesearch_results'

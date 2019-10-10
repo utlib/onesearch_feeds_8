@@ -5,6 +5,7 @@ import SearchArea from './components/SearchArea';
 import { ResultBox }  from './components/ResultBox';
 import { FormatBox }  from './components/FormatBox';
 import { GuidesBox }  from './components/GuidesBox';
+import { ArticlesBox }  from './components/ArticlesBox';
 
 class Onesearch_Feeds extends Component {
   constructor(props) {
@@ -22,6 +23,8 @@ class Onesearch_Feeds extends Component {
       render_books: false,
       render_journal: false,
       next_most_format: '',
+      summon_enabled: 0,
+      summon_count: 0,
       guides_enabled: 0,
       books_count: 0,
       books_result: [],
@@ -34,7 +37,8 @@ class Onesearch_Feeds extends Component {
       next_most_format_count: 0,
       libguides_site_id: '',
       libguides_api_key: '',
-      libguides_group_id: ''
+      libguides_group_id: '',
+      summon_lists: []
     }
   }
 
@@ -99,6 +103,13 @@ class Onesearch_Feeds extends Component {
       this.setState({guides_result: res.data.splice(0,this.state.items_per_block)});
       })
     }
+
+    if(this.state.summon_enabled) {
+      axios.get(`http://localhost:8002/summon.php?kw=${this.state.kw}`).then((res) => {
+        this.setState({summon_lists: res.data.documents});
+        this.setState({summon_count: res.data.recordCount});
+      })
+    }
  
   }
 
@@ -121,6 +132,7 @@ class Onesearch_Feeds extends Component {
     this.setState({journal_enabled: drupal_settings_json.journal_enabled});
     this.setState({formats_enabled: drupal_settings_json.formats_enabled});
     this.setState({guides_enabled: drupal_settings_json.guides_enabled});
+    this.setState({summon_enabled: drupal_settings_json.summon_enabled});
     this.setState({libguides_site_id: drupal_settings_json.libguides_site_id});
     this.setState({libguides_api_key: drupal_settings_json.libguides_api_key});
     this.setState({libguides_group_id: drupal_settings_json.libguides_group_id});
@@ -133,6 +145,7 @@ class Onesearch_Feeds extends Component {
         <SearchArea />
         <div id='result_area'>
           <div id='catalogue_list'>
+            {(this.state.summon_count > 0 && this.state.summon_enabled) && <ArticlesBox items_count={this.state.summon_count} items_list={this.state.summon_lists} />}
             {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} is_online={this.state.is_online_clicked} />}
             {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} is_online={this.state.is_online_clicked} />}
             {(this.state.next_most_format_count > 0 && this.state.formats_enabled)  && <ResultBox heading={this.state.next_most_format} items_count={this.state.next_most_format_count} items_list={this.state.next_most_format_list} is_online={this.state.is_online_clicked} />}
