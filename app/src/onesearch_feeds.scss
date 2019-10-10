@@ -32,6 +32,9 @@ div#result_area {
         padding: 5px 0;
         clear: both;
         width: 100%;
+        .authors {
+            display: block;
+        }
     }
     footer {
         padding: 4px 0px;

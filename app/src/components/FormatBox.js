@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ResultDescription } from './ResultDescription';
+import NumberFormat from 'react-number-format';
 
 export const FormatBox = (props) => {
 
@@ -12,7 +13,7 @@ export const FormatBox = (props) => {
                 </div>
             </header>
             <ul>
-                {props.items_list.map((item) => <li key={item.id}> <a href={`https://search.library.utoronto.ca/${item.link}`}> {item.name} {item.count} </a> </li>)}
+                {props.items_list.map((item) => <li key={item.id}> <a href={`https://search.library.utoronto.ca/${item.link}`}> {item.name} <NumberFormat value={item.count} displayType={'text'} thousandSeparator={true} /> </a> </li>)}
 
             </ul>
             </div>

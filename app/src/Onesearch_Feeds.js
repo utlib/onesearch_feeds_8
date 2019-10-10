@@ -32,21 +32,24 @@ class Onesearch_Feeds extends Component {
       journal_result: [],
       guides_result: [],
       is_online_clicked: false,
+      is_title_only: false,
       other_format_list: [],
       next_most_format_list: [],
       next_most_format_count: 0,
       libguides_site_id: '',
       libguides_api_key: '',
       libguides_group_id: '',
-      summon_lists: []
+      summon_lists: [],
+      next_most_format_id: '',
     }
   }
 
   performSearch = (e) => {
     e.preventDefault();
     var online_checked = e.target.onesearch_online.checked;
-    this.setState({is_online_clicked: online_checked})
+    this.setState({is_online_clicked: online_checked});
     var title_only_checked = e.target.onesearch_title_only.checked;
+    this.setState({is_title_only: title_only_checked});
     if (this.state.books_enabled) {
       axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=6962`).then((res) => {
         this.setState({books_count: res.data.result.numResults});
@@ -81,14 +84,14 @@ class Onesearch_Feeds extends Component {
         }
         
         this.setState({next_most_format: formats_list[0].name});
-        var next_most_format_id = formats_list[0].id;
+        this.setState({next_most_format_id: formats_list[0].id});
         formats_list.splice(0,1);
         formats_list.sort(function (a, b) {
           return b.count - a.count;
         });
         this.setState({other_format_list: formats_list});
         
-        axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=${next_most_format_id}`).then((res) => {
+        axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=${this.state.next_most_format_id}`).then((res) => {
           this.setState({next_most_format_count: res.data.result.numResults});
            if (res.data.result.numResults > 0) {
             this.setState({next_most_format_list: res.data.result.records});
@@ -105,7 +108,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if(this.state.summon_enabled) {
-      axios.get(`http://localhost:8002/summon.php?kw=${this.state.kw}`).then((res) => {
+      axios.get(`http://localhost:8002/summon.php?kw=${this.state.kw}&online=${online_checked}`).then((res) => {
         this.setState({summon_lists: res.data.documents});
         this.setState({summon_count: res.data.recordCount});
       })
@@ -145,10 +148,10 @@ class Onesearch_Feeds extends Component {
         <SearchArea />
         <div id='result_area'>
           <div id='catalogue_list'>
-            {(this.state.summon_count > 0 && this.state.summon_enabled) && <ArticlesBox items_count={this.state.summon_count} items_list={this.state.summon_lists} />}
-            {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} items_count={this.state.books_count} items_list={this.state.books_result} is_online={this.state.is_online_clicked} />}
-            {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} items_count={this.state.journal_count} items_list={this.state.journal_result} is_online={this.state.is_online_clicked} />}
-            {(this.state.next_most_format_count > 0 && this.state.formats_enabled)  && <ResultBox heading={this.state.next_most_format} items_count={this.state.next_most_format_count} items_list={this.state.next_most_format_list} is_online={this.state.is_online_clicked} />}
+            {(this.state.summon_count > 0 && this.state.summon_enabled) && <ArticlesBox items_count={this.state.summon_count} items_list={this.state.summon_lists} kw={this.state.is_title_only? `(Title:(${this.state.kw}))` : this.state.kw} is_online={this.state.is_online_clicked} />}
+            {(this.state.books_count > 0 && this.state.render_books) && <ResultBox heading={'Books'} id={'6962'} items_count={this.state.books_count} items_list={this.state.books_result} title_only={this.state.is_title_only} is_online={this.state.is_online_clicked} kw={this.state.kw} />}
+            {(this.state.journal_count > 0 && this.state.render_journal) && <ResultBox heading={'Journals & Databases'} id={'206416'} items_count={this.state.journal_count} items_list={this.state.journal_result} title_only={this.state.is_title_only} is_online={this.state.is_online_clicked} kw={this.state.kw} />}
+            {(this.state.next_most_format_count > 0 && this.state.formats_enabled)  && <ResultBox heading={this.state.next_most_format} id={this.state.next_most_format_id} items_count={this.state.next_most_format_count} title_only={this.state.is_title_only} items_list={this.state.next_most_format_list} is_online={this.state.is_online_clicked} kw={this.state.kw} />}
             {(this.state.other_format_list.length > 0 && this.state.formats_enabled)  && <FormatBox items_list={this.state.other_format_list} />}
           </div>
           <div id='library_info'>
