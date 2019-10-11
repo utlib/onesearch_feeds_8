@@ -51,7 +51,7 @@ class Onesearch_Feeds extends Component {
     var title_only_checked = e.target.onesearch_title_only.checked;
     this.setState({is_title_only: title_only_checked});
     if (this.state.books_enabled) {
-      axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=6962`).then((res) => {
+      axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/6962`).then((res) => {
         this.setState({books_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({books_result: res.data.result.records});
@@ -61,7 +61,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if (this.state.journal_enabled) {
-      axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=206416`).then((res) => {
+      axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/206416`).then((res) => {
         this.setState({journal_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({journal_result: res.data.result.records});
@@ -71,7 +71,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if(this.state.formats_enabled) {
-      axios.get(`http://localhost:8002/formats.php?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}`).then((res) => {
+      axios.get(`/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}`).then((res) => {
         var formats_list = res.data.values;
         if (this.state.books_enabled) {
           var books_idx = formats_list.findIndex(x => x.id == '6962');
@@ -91,7 +91,7 @@ class Onesearch_Feeds extends Component {
         });
         this.setState({other_format_list: formats_list});
         
-        axios.get(`http://localhost:8002/?kw=${this.state.kw}&online=${online_checked}&title_only=${title_only_checked}&format=${this.state.next_most_format_id}`).then((res) => {
+        axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`).then((res) => {
           this.setState({next_most_format_count: res.data.result.numResults});
            if (res.data.result.numResults > 0) {
             this.setState({next_most_format_list: res.data.result.records});
@@ -108,7 +108,7 @@ class Onesearch_Feeds extends Component {
     }
 
     if(this.state.summon_enabled) {
-      axios.get(`http://localhost:8002/summon.php?kw=${this.state.kw}&online=${online_checked}`).then((res) => {
+      axios.get(`/api/summon/${this.state.kw}/${online_checked}/${title_only_checked}`).then((res) => {
         this.setState({summon_lists: res.data.documents});
         this.setState({summon_count: res.data.recordCount});
       })

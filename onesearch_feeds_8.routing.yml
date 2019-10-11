@@ -23,3 +23,27 @@ onesearch_feeds_8.search_results:
     _title: 'Onesearch Results'
   requirements:
     _permission: 'access content'
+onesearch_feeds_8.call_endeca:
+  path: '/api/call_endeca/{kw}/{online}/{title_only}/{format}'
+  defaults:
+    _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::endeca_call'
+    _title: 'JSON api'
+  methods:  [GET]
+  requirements:
+    _access: 'TRUE'
+onesearch_feeds_8.formats:
+  path: '/api/formats_list/{kw}/{online}/{title_only}'
+  defaults:
+    _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::formats'
+    _title: 'JSON api'
+  methods:  [GET]
+  requirements:
+    _access: 'TRUE'
+onesearch_feeds_8.summon:
+  path: '/api/summon/{kw}/{online}/{title_only}'
+  defaults:
+    _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::summon'
+    _title: 'JSON api'
+  methods:  [GET]
+  requirements:
+    _access: 'TRUE'
