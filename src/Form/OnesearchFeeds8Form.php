@@ -24,7 +24,12 @@ class OnesearchFeeds8Form extends ConfigFormBase {
      */  
     public function buildForm(array $form, FormStateInterface $form_state) {  
         $config = $this->config('onesearch_feeds_8.adminsettings');  
-
+        $form['onesearch_feeds_8_is_local_env'] = array( 
+            '#title' => $this->t('Running drupal sites in localhost?'),  
+            '#type' => 'checkbox',
+            '#default_value' => $config->get('onesearch_feeds_8_is_local_env',0),
+            '#description' => $this->t('Check if doing local development'), 
+        );
         $form['onesearch_feeds_8_number_of_articles'] = [  
             '#type' => 'number',  
             '#title' => $this->t('Number of results to show'),  
@@ -33,7 +38,7 @@ class OnesearchFeeds8Form extends ConfigFormBase {
             '#maxlength' => 2,
             '#default_value' => $config->get('onesearch_feeds_8_number_of_articles'),  
             '#required' => TRUE
-        ];  
+        ]; 
 
         $form['onesearch_feeds_8_drupal_content_types'] = [  
             '#type' => 'textfield',  
@@ -86,6 +91,7 @@ class OnesearchFeeds8Form extends ConfigFormBase {
 
         $this->config('onesearch_feeds_8.adminsettings')
         ->set('onesearch_feeds_8_number_of_articles', $form_state->getValue('onesearch_feeds_8_number_of_articles'))
+        ->set('onesearch_feeds_8_is_local_env', $form_state->getValue('onesearch_feeds_8_is_local_env'))
         ->set('onesearch_feeds_8_drupal_content_types', $form_state->getValue('onesearch_feeds_8_drupal_content_types'))
         ->set('onesearch_feeds_8_libguides_api_key', $form_state->getValue('onesearch_feeds_8_libguides_api_key'))
         ->set('onesearch_feeds_8_libguides_site_id', $form_state->getValue('onesearch_feeds_8_libguides_site_id'))
