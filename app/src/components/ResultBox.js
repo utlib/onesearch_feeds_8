@@ -46,8 +46,8 @@ export const ResultBox = (props) => {
 
             </ul>
             <footer>
-                <a href={renderAllUrl(props.id,props.title_only, 1, props.kw)} className="view_more_guides">All Online {props.heading}</a>
-                <a href={renderAllUrl(props.id,props.title_only, 0, props.kw)} className="view_more_guides">All {props.heading}</a>
+                <a href={renderAllUrl(props.id,props.title_only, 1, props.kw)} className="view_more_guides">{props.online_only? 'All' : ''} Online {props.heading} {props.online_only? <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /> : ''}</a>
+                <a href={renderAllUrl(props.id,props.title_only, 0, props.kw)} className="view_more_guides">All {props.heading} {props.online_only? '' : <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} />}</a>
             </footer>
             
             </div>
