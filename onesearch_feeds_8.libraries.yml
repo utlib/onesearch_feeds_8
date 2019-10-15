@@ -31,3 +31,7 @@ onesearch:
   css:
     theme:
       app/public/css/onesearch_feeds.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
