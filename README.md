@@ -1,2 +1,2 @@
-# D8HWexample
-D8 Hello World Module
+# Onesearch Feeds Module
+This is a D8 version of onesearch feeds module
