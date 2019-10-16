@@ -54,7 +54,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js && npm run build:clean",
-    "build:clean": "cd build && mv static/js/*.js onesearch_feeds.js && rm -r static/js/*",
+    "build:clean": "cd build && mv static/js/*.js ../public/js/onesearch_feeds.js && rm -r static/js/*",
     "test": "node scripts/test.js --env=jsdom",
     "build-css": "node-sass src/onesearch_feeds.scss public/css/onesearch_feeds.css",
     "watch-css": "nodemon -e scss -x \"npm run build-css\""

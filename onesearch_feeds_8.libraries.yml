@@ -27,7 +27,7 @@ react-dev:
 
 onesearch:
   js:
-    app/build/onesearch_feeds.js: {}
+    app/public/js/onesearch_feeds.js: {}
   css:
     theme:
       app/public/css/onesearch_feeds.css: {}
