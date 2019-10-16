@@ -11,7 +11,7 @@ To use this module for the library site, please add following lines at `composer
 ```
 and add the following line under `require`
 ```
-"central-library-services/onesearch_feeds_8": "dev-master",
+"central-library-services/onesearch_feeds_8": "dev-master#{git commit hash}",
 ```
 
 and do `composer update`
