@@ -79,8 +79,6 @@ class OnesearchFeeds8Controller extends ControllerBase {
 
     public function formats($kw, $online, $title_only) {
         header('Access-Control-Allow-Origin: *');  
-        $kw = $_GET['kw'];
-        //  Initiate curl
     
         if ($online === 'true') {
             $n_keyword = '0+207006';
@@ -93,7 +91,7 @@ class OnesearchFeeds8Controller extends ControllerBase {
         } else {
             $ntk='Anywhere';
         }
-        $url = "https://search.library.utoronto.ca/search?Nu=p_work_normalized&Np=1&action=get_all_facetvals&facet=Format&format=json&Ntx=mode+matchallpartial&Ntt=dogs&N=$n_keyword&Ntk=$ntk";
+        $url = "https://search.library.utoronto.ca/search?Nu=p_work_normalized&Np=1&action=get_all_facetvals&facet=Format&format=json&Ntx=mode+matchallpartial&Ntt=$kw&N=$n_keyword&Ntk=$ntk";
         $ch = curl_init();
      
         //Set the URL that you want to GET by using the CURLOPT_URL option.

@@ -144,12 +144,12 @@ renderFormatUrl = (title_only, online_only,kw) => {
           formats_list.splice(formats_list.findIndex(x => x.id == '6979'),1);
         }
         
-        this.setState({next_most_format: formats_list[0].name});
-        this.setState({next_most_format_id: formats_list[0].id});
-        formats_list.splice(0,1);
         formats_list.sort(function (a, b) {
           return b.count - a.count;
         });
+        this.setState({next_most_format: formats_list[0].name});
+        this.setState({next_most_format_id: formats_list[0].id});
+        formats_list.splice(0,1);
         this.setState({other_format_list: formats_list});
         if (this.state.is_local) {
           var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
