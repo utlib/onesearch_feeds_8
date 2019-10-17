@@ -14,6 +14,7 @@ class Onesearch_Feeds extends Component {
     this.state = {
       performSearch: this.performSearch,
       kw: '',
+      is_local: 1,
       items_per_block: '',
       updateKW: this.updateKW,
       handleCheckBoxChange: this.handleCheckBoxChange,
@@ -44,6 +45,50 @@ class Onesearch_Feeds extends Component {
     }
   }
 
+  renderAllUrl = (id, title_only, online_only,kw) => {
+    var nTx = 'mode+matchallpartial';
+    if (title_only) {
+        var nTk = 'Title';
+        if (id == 6962) {
+            nTx = 'mode+matchallpartial+rel+phrase(approximate),nterms,maxfield,glom,static(Publication_year,descending)';
+        }
+        
+
+    } else {
+        var nTk = 'Anywhere';
+    }
+
+    if (id == 206416) {
+        nTk = 'Title';
+        nTx = 'mode+matchallpartial+rel+nterms,exact,static(Online,ascending),maxfield,glom';
+    }
+
+    if (online_only) {
+        var n_keyword = id+'+207006';
+    } else {
+        var n_keyword = id;
+    }
+
+    var url = `https://search.library.utoronto.ca/search?Ntx=${nTx}&Nu=p_work_normalized&N=${n_keyword}&Np=1&Ntt=${kw}&Ntk=${nTk}&format=json&results=${this.state.items_per_block}`;
+    return url;
+}
+
+renderFormatUrl = (title_only, online_only,kw) => {
+
+  if (online_only) {
+    var n_keyword  = '0+207006';
+  } else {
+    var n_keyword = '0';
+  }
+
+  if (title_only) {
+    var nTk = 'Title';
+  } else {
+    var nTk ='Anywhere';
+  }
+    var url = `https://search.library.utoronto.ca/search?Nu=p_work_normalized&Np=1&action=get_all_facetvals&facet=Format&format=json&Ntx=mode+matchallpartial&Ntt=${kw}&N=$n_keyword&Ntk=${nTk}`
+}
+
   performSearch = (e) => {
     e.preventDefault();
     var online_checked = e.target.onesearch_online.checked;
@@ -51,7 +96,12 @@ class Onesearch_Feeds extends Component {
     var title_only_checked = e.target.onesearch_title_only.checked;
     this.setState({is_title_only: title_only_checked});
     if (this.state.books_enabled) {
-      axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/6962`).then((res) => {
+      if (this.state.is_local) {
+        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/6962`;
+      } else {
+        var url = this.renderAllUrl('6962',title_only_checked, online_checked, this.state.kw);
+      }
+      axios.get(url).then((res) => {
         this.setState({books_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({books_result: res.data.result.records});
@@ -61,7 +111,12 @@ class Onesearch_Feeds extends Component {
     }
 
     if (this.state.journal_enabled) {
-      axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/206416`).then((res) => {
+      if (this.state.is_local) {
+        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/206416`;
+      } else {
+        var url = this.renderAllUrl('206416',title_only_checked, online_checked, this.state.kw);
+      }
+      axios.get(url).then((res) => {
         this.setState({journal_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({journal_result: res.data.result.records});
@@ -71,7 +126,12 @@ class Onesearch_Feeds extends Component {
     }
 
     if(this.state.formats_enabled) {
-      axios.get(`/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}`).then((res) => {
+      if (this.state.is_local) {
+        var url = `/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}`;
+      } else {
+        var url = this.renderFormatUrl(title_only_checked, online_checked, this.state.kw);
+      }
+      axios.get(url).then((res) => {
         var formats_list = res.data.values;
         if (this.state.books_enabled) {
           var books_idx = formats_list.findIndex(x => x.id == '6962');
@@ -90,8 +150,12 @@ class Onesearch_Feeds extends Component {
           return b.count - a.count;
         });
         this.setState({other_format_list: formats_list});
-        
-        axios.get(`/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`).then((res) => {
+        if (this.state.is_local) {
+          var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
+        } else {
+          var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, this.state.kw);
+        }
+        axios.get(url).then((res) => {
           this.setState({next_most_format_count: res.data.result.numResults});
            if (res.data.result.numResults > 0) {
             this.setState({next_most_format_list: res.data.result.records});
@@ -130,6 +194,7 @@ class Onesearch_Feeds extends Component {
   componentDidMount() {
     var settingsElement = document.querySelector('head > script[type="application/json"][data-drupal-selector="drupal-settings-json"], body > script[type="application/json"][data-drupal-selector="drupal-settings-json"]');
     var drupal_settings_json = JSON.parse(settingsElement.textContent);
+    this.setState({is_local: drupal_settings_json.is_local});
     this.setState({items_per_block: drupal_settings_json.items_per_block});
     this.setState({books_enabled: drupal_settings_json.books_enabled});
     this.setState({journal_enabled: drupal_settings_json.journal_enabled});
