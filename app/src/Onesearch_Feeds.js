@@ -87,7 +87,8 @@ renderFormatUrl = (title_only, online_only,kw) => {
     var nTk ='Anywhere';
   }
     var url = `https://search.library.utoronto.ca/search?Nu=p_work_normalized&Np=1&action=get_all_facetvals&facet=Format&format=json&Ntx=mode+matchallpartial&Ntt=${kw}&N=$n_keyword&Ntk=${nTk}`
-}
+    return url;
+  }
 
   performSearch = (e) => {
     e.preventDefault();
