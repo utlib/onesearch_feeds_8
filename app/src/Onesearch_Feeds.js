@@ -90,6 +90,12 @@ renderFormatUrl = (title_only, online_only,kw) => {
     return url;
   }
 
+  callAxios = async (url) => {
+    let json = await axios.get(url);
+
+    return json;
+  }
+
   performSearch = (e) => {
     e.preventDefault();
     var online_checked = e.target.onesearch_online.checked;
@@ -102,7 +108,8 @@ renderFormatUrl = (title_only, online_only,kw) => {
       } else {
         var url = this.renderAllUrl('6962',title_only_checked, online_checked, this.state.kw);
       }
-      axios.get(url).then((res) => {
+
+      this.callAxios(url).then((res) => {
         this.setState({books_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({books_result: res.data.result.records});
@@ -117,7 +124,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       } else {
         var url = this.renderAllUrl('206416',title_only_checked, online_checked, this.state.kw);
       }
-      axios.get(url).then((res) => {
+      this.callAxios(url).then((res) => {
         this.setState({journal_count: res.data.result.numResults});
          if (res.data.result.numResults > 0) {
           this.setState({journal_result: res.data.result.records});
@@ -132,7 +139,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       } else {
         var url = this.renderFormatUrl(title_only_checked, online_checked, this.state.kw);
       }
-      axios.get(url).then((res) => {
+      this.callAxios(url).then((res) => {
         var formats_list = res.data.values;
         if (this.state.books_enabled) {
           var books_idx = formats_list.findIndex(x => x.id == '6962');
@@ -156,7 +163,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
         } else {
           var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, this.state.kw);
         }
-        axios.get(url).then((res) => {
+        this.callAxios(url).then((res) => {
           this.setState({next_most_format_count: res.data.result.numResults});
            if (res.data.result.numResults > 0) {
             this.setState({next_most_format_list: res.data.result.records});
