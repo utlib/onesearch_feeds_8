@@ -100,11 +100,14 @@ renderFormatUrl = (title_only, online_only,kw) => {
     this.setState({is_online_clicked: online_checked});
     var title_only_checked = e.target.onesearch_title_only.checked;
     this.setState({is_title_only: title_only_checked});
+
+    var kw_encoded = encodeURIComponent(this.state.kw);
+
     if (this.state.books_enabled) {
       if (this.state.is_local) {
         var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/6962`;
       } else {
-        var url = this.renderAllUrl('6962',title_only_checked, online_checked, this.state.kw);
+        var url = this.renderAllUrl('6962',title_only_checked, online_checked, kw_encoded);
       }
 
       let res = await this.callAxios(url);
@@ -119,7 +122,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       if (this.state.is_local) {
         var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/206416`;
       } else {
-        var url = this.renderAllUrl('206416',title_only_checked, online_checked, this.state.kw);
+        var url = this.renderAllUrl('206416',title_only_checked, online_checked, kw_encoded);
       }
       let res = await this.callAxios(url);
       this.setState({journal_count: res.data.result.numResults});
@@ -133,7 +136,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       if (this.state.is_local) {
         var url = `/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}`;
       } else {
-        var url = this.renderFormatUrl(title_only_checked, online_checked, this.state.kw);
+        var url = this.renderFormatUrl(title_only_checked, online_checked, kw_encoded);
       }
       let res = await this.callAxios(url);
       var formats_list = res.data.values;
@@ -150,7 +153,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       formats_list.sort(function (a, b) {
         return b.count - a.count;
       });
-      
+
       this.setState({next_most_format: formats_list[0].name});
       this.setState({next_most_format_id: formats_list[0].id});
       formats_list.splice(0,1);
@@ -158,7 +161,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       if (this.state.is_local) {
         var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
       } else {
-        var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, this.state.kw);
+        var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, kw_encoded);
       }
       let res_most_format = await this.callAxios(url);
       this.setState({next_most_format_count: res_most_format.data.result.numResults});
@@ -168,17 +171,33 @@ renderFormatUrl = (title_only, online_only,kw) => {
     }    
 
     if(this.state.guides_enabled) {
-      axios.get(`//lgapi-ca.libapps.com/1.1/guides?search_match=2&status=1&site_id=${this.state.libguides_site_id}&key=${this.state.libguides_api_key}&search_terms=${this.state.kw}`).then((res) => {
+      axios.get(`//lgapi-ca.libapps.com/1.1/guides?search_match=2&status=1&site_id=${this.state.libguides_site_id}&key=${this.state.libguides_api_key}&search_terms=${kw_encoded}`).then((res) => {
       
       this.setState({guides_result: res.data.splice(0,this.state.items_per_block)});
       })
     }
 
     if(this.state.summon_enabled) {
-      axios.get(`/api/summon/${this.state.kw}/${online_checked}/${title_only_checked}`).then((res) => {
-        this.setState({summon_lists: res.data.documents});
-        this.setState({summon_count: res.data.recordCount});
-      })
+      if (this.state.is_local) {
+        var url = `/api/summon/${this.state.kw}/${online_checked}/${title_only_checked}`;
+      } else {
+        if (online_checked) {
+          var fulltext = '&fulltext=1';
+        } else {
+            var fulltext = '';
+        }
+  
+        if (title_only_checked) {
+            var kw_summon = `(Title:(${kw_encoded}))`;
+        } else {
+            var kw_summon = kw_encoded;
+        }
+
+        var url = `https://query.library.utoronto.ca/index.php/search/json?kw=${kw_summon}&num_results=${this.state.items_per_block}&facet[0]=addFacetValueFilters(ContentType,Journal+Article)${fulltext}`;
+      }
+      let res = await this.callAxios(url);
+      this.setState({summon_lists: res.data.documents});
+      this.setState({summon_count: res.data.recordCount});
     }
  
   }

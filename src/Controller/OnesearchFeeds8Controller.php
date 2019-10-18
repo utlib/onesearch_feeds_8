@@ -40,6 +40,8 @@ class OnesearchFeeds8Controller extends ControllerBase {
             $n_keyword = '0+'.$format;
         }
 
+        $kw = urlencode($kw);
+
         if ($title_only === 'true') {
             $ntk = 'Title';
             if ($format === '6962') {
@@ -56,7 +58,6 @@ class OnesearchFeeds8Controller extends ControllerBase {
         }
     
         $url = "https://search.library.utoronto.ca/search?&Nu=p_work_normalized&N=$n_keyword&Ntx=$ntx&Np=1&Ntt=$kw&Ntk=$ntk&format=json&results=5";
-    
         $ch = curl_init();
      
         //Set the URL that you want to GET by using the CURLOPT_URL option.
@@ -79,7 +80,7 @@ class OnesearchFeeds8Controller extends ControllerBase {
 
     public function formats($kw, $online, $title_only) {
         header('Access-Control-Allow-Origin: *');  
-    
+        $kw = urlencode($kw);
         if ($online === 'true') {
             $n_keyword = '0+207006';
         } else {
@@ -120,6 +121,8 @@ class OnesearchFeeds8Controller extends ControllerBase {
             $fulltext = '';
         }
     
+        $kw = urlencode($kw);
+
         if ($title_only === 'true') {
             $kw = "(Title:($kw))";
         }
