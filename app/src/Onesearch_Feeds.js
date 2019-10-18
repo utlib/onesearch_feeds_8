@@ -91,12 +91,10 @@ renderFormatUrl = (title_only, online_only,kw) => {
   }
 
   callAxios = async (url) => {
-    let json = await axios.get(url);
-
-    return json;
+    return axios.get(url);
   }
 
-  performSearch = (e) => {
+  performSearch = async (e) => {
     e.preventDefault();
     var online_checked = e.target.onesearch_online.checked;
     this.setState({is_online_clicked: online_checked});
@@ -109,13 +107,12 @@ renderFormatUrl = (title_only, online_only,kw) => {
         var url = this.renderAllUrl('6962',title_only_checked, online_checked, this.state.kw);
       }
 
-      this.callAxios(url).then((res) => {
-        this.setState({books_count: res.data.result.numResults});
-         if (res.data.result.numResults > 0) {
-          this.setState({books_result: res.data.result.records});
-          this.setState({render_books: true});
-        }
-      });
+      let res = await this.callAxios(url);
+      this.setState({books_count: res.data.result.numResults});
+        if (res.data.result.numResults > 0) {
+        this.setState({books_result: res.data.result.records});
+        this.setState({render_books: true});
+      }
     }
 
     if (this.state.journal_enabled) {
@@ -124,13 +121,12 @@ renderFormatUrl = (title_only, online_only,kw) => {
       } else {
         var url = this.renderAllUrl('206416',title_only_checked, online_checked, this.state.kw);
       }
-      this.callAxios(url).then((res) => {
-        this.setState({journal_count: res.data.result.numResults});
-         if (res.data.result.numResults > 0) {
-          this.setState({journal_result: res.data.result.records});
-          this.setState({render_journal: true});
-        }
-      });  
+      let res = await this.callAxios(url);
+      this.setState({journal_count: res.data.result.numResults});
+        if (res.data.result.numResults > 0) {
+        this.setState({journal_result: res.data.result.records});
+        this.setState({render_journal: true});
+      }
     }
 
     if(this.state.formats_enabled) {
@@ -139,38 +135,37 @@ renderFormatUrl = (title_only, online_only,kw) => {
       } else {
         var url = this.renderFormatUrl(title_only_checked, online_checked, this.state.kw);
       }
-      this.callAxios(url).then((res) => {
-        var formats_list = res.data.values;
-        if (this.state.books_enabled) {
-          var books_idx = formats_list.findIndex(x => x.id == '6962');
-          formats_list.splice(books_idx,1);
-        }
-        if (this.state.journal_enabled) {
-          var journal_idx = formats_list.findIndex(x => x.id == '206416');
-          formats_list.splice(journal_idx,1);
-          formats_list.splice(formats_list.findIndex(x => x.id == '6979'),1);
-        }
-        
-        formats_list.sort(function (a, b) {
-          return b.count - a.count;
-        });
-        this.setState({next_most_format: formats_list[0].name});
-        this.setState({next_most_format_id: formats_list[0].id});
-        formats_list.splice(0,1);
-        this.setState({other_format_list: formats_list});
-        if (this.state.is_local) {
-          var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
-        } else {
-          var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, this.state.kw);
-        }
-        this.callAxios(url).then((res) => {
-          this.setState({next_most_format_count: res.data.result.numResults});
-           if (res.data.result.numResults > 0) {
-            this.setState({next_most_format_list: res.data.result.records});
-          }
-        });  
-      });      
-    }
+      let res = await this.callAxios(url);
+      var formats_list = res.data.values;
+      if (this.state.books_enabled) {
+        var books_idx = formats_list.findIndex(x => x.id == '6962');
+        formats_list.splice(books_idx,1);
+      }
+      if (this.state.journal_enabled) {
+        var journal_idx = formats_list.findIndex(x => x.id == '206416');
+        formats_list.splice(journal_idx,1);
+        formats_list.splice(formats_list.findIndex(x => x.id == '6979'),1);
+      }
+      
+      formats_list.sort(function (a, b) {
+        return b.count - a.count;
+      });
+      
+      this.setState({next_most_format: formats_list[0].name});
+      this.setState({next_most_format_id: formats_list[0].id});
+      formats_list.splice(0,1);
+      this.setState({other_format_list: formats_list});
+      if (this.state.is_local) {
+        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
+      } else {
+        var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, this.state.kw);
+      }
+      let res_most_format = await this.callAxios(url);
+      this.setState({next_most_format_count: res_most_format.data.result.numResults});
+        if (res_most_format.data.result.numResults > 0) {
+        this.setState({next_most_format_list: res_most_format.data.result.records});
+      }
+    }    
 
     if(this.state.guides_enabled) {
       axios.get(`//lgapi-ca.libapps.com/1.1/guides?search_match=2&status=1&site_id=${this.state.libguides_site_id}&key=${this.state.libguides_api_key}&search_terms=${this.state.kw}`).then((res) => {
