@@ -142,18 +142,27 @@ renderFormatUrl = (title_only, online_only,kw) => {
       var formats_list = res.data.values;
       if (this.state.books_enabled) {
         var books_idx = formats_list.findIndex(x => x.id == '6962');
-        formats_list.splice(books_idx,1);
+        if (books_idx !== -1) {
+          formats_list.splice(books_idx,1);
+        }
       }
       if (this.state.journal_enabled) {
         var journal_idx = formats_list.findIndex(x => x.id == '206416');
-        formats_list.splice(journal_idx,1);
-        formats_list.splice(formats_list.findIndex(x => x.id == '6979'),1);
+        if (journal_idx !== -1) {
+          formats_list.splice(journal_idx,1);
+        }
+
+        var second_journal_idx = formats_list.findIndex(x => x.id == '6979');
+        if (second_journal_idx !== -1) {
+          formats_list.splice(second_journal_idx,1);
+        }
       }
       
       formats_list.sort(function (a, b) {
         return b.count - a.count;
       });
 
+      console.log(formats_list);
       this.setState({next_most_format: formats_list[0].name});
       this.setState({next_most_format_id: formats_list[0].id});
       formats_list.splice(0,1);
