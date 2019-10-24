@@ -4,7 +4,9 @@ import NumberFormat from 'react-number-format';
 export const ArticlesBox = (props) => {
 
     return (
+        
         <div className="box guides" id="guides">
+            {props.items_count > 0 ?
             <div className="result-box" id="guides_results">
             <header>
                 <div>
@@ -28,6 +30,9 @@ export const ArticlesBox = (props) => {
             </footer>
             
             </div>
+            :<div></div>
+            }
         </div>
+        
     )
 }  

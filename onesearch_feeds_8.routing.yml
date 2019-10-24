@@ -47,3 +47,11 @@ onesearch_feeds_8.summon:
   methods:  [GET]
   requirements:
     _access: 'TRUE'
+onesearch_feeds_8.search_drupal:
+  path: '/api/search/{kw}'
+  defaults:
+    _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::search_drupal'
+    _title: 'Search Drupal'
+  methods: [GET]
+  requirements:
+    _access: 'TRUE'

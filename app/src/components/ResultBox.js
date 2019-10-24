@@ -34,7 +34,8 @@ export const ResultBox = (props) => {
     }
 
     return (
-        <div className="box endeca_box">
+        <div className="box endeca_box"> 
+        {props.items_count > 0 ?
             <div className="result-box" id="book_results">
             <header>
                 <div>
@@ -51,6 +52,9 @@ export const ResultBox = (props) => {
             </footer>
             
             </div>
+        : <div></div>
+        }
+
         </div>
     )
 }  

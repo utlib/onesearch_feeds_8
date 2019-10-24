@@ -106,7 +106,24 @@ class OnesearchFeeds8SearchOptionsForm extends ConfigFormBase {
         $form['drupal']['drupal_enabled'] = array( 
             '#type' => 'checkbox',
             '#title' => 'Enabled?',
-            '#default_value' => $config->get('onesearch_feeds_8_drupal_enabled',0)
+            '#default_value' => $config->get('onesearch_feeds_8_drupal_enabled',0),
+            '#attributes' => [
+                'name' => 'drupal_enabled'
+            ]
+        );
+
+        $form['drupal']['search_index'] = array(
+            '#title' => $this->t('Drupal Search API Index'),  
+            '#type' => 'textfield',
+            '#size' => '60',
+            '#placeholder' => 'Enter machine name of search index defined in Search API',
+            '#required' => TRUE,
+            '#states' => [
+                'visible' => [
+                    ':input[name="drupal_enabled"]' => array('checked' => TRUE)
+                ]
+            ],
+            '#default_value' => $config->get('onesearch_feeds_8_drupal_index', '')
         );
     
         return parent::buildForm($form, $form_state);  
@@ -126,6 +143,7 @@ class OnesearchFeeds8SearchOptionsForm extends ConfigFormBase {
         ->set('onesearch_feeds_8_formats_enabled', $form_state->getValue('formats_enabled'))
         ->set('onesearch_feeds_8_answers_enabled', $form_state->getValue('answers_enabled'))
         ->set('onesearch_feeds_8_drupal_enabled', $form_state->getValue('drupal_enabled'))
+        ->set('onesearch_feeds_8_drupal_index', $form_state->getValue('search_index'))
         ->save();
     }
 }

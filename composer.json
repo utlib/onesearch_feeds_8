@@ -1,6 +1,6 @@
 {
     "name": "central_library_services/onesearch_feeds_8",
-    "version": "0.6.1",
+    "version": "0.7.0",
     "type": "drupal-custom-module",
     "description": "Drupal 8 version of onesearch feeds",
     "homepage": "https://git.library.utoronto.ca/central-library-services/onesearch_feeds_8",
