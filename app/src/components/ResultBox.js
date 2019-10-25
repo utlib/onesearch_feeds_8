@@ -33,28 +33,30 @@ export const ResultBox = (props) => {
         return url;
     }
 
-    return (
-        <div className="box endeca_box"> 
-        {props.items_count > 0 ?
-            <div className="result-box" id="book_results">
-            <header>
-                <div>
-                    <h2>{ props.is_online ? 'Online': ''} {props.heading} <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></h2>
+
+    if (props.items_count > 0 ) {
+        return (
+            <div className="box endeca_box"> 
+                <div className="result-box" id="book_results">
+                <header>
+                    <div>
+                        <h2>{ props.is_online ? 'Online': ''} {props.heading} <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></h2>
+                    </div>
+                </header>
+                <ul>
+                    {props.items_list.map((item) => <li key={item.catkey}><ResultDescription item={item}/> </li>)}
+
+                </ul>
+                <footer>
+                    <a href={renderAllUrl(props.id,props.title_only, 1, props.kw)} className="view_more_guides">{props.online_only? 'All' : ''} Online {props.heading} {props.online_only? <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /> : ''}</a>
+                    <a href={renderAllUrl(props.id,props.title_only, 0, props.kw)} className="view_more_guides">All {props.heading} {props.online_only? '' : <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} />}</a>
+                </footer>
+                
                 </div>
-            </header>
-            <ul>
-                {props.items_list.map((item) => <li key={item.catkey}><ResultDescription item={item}/> </li>)}
-
-            </ul>
-            <footer>
-                <a href={renderAllUrl(props.id,props.title_only, 1, props.kw)} className="view_more_guides">{props.online_only? 'All' : ''} Online {props.heading} {props.online_only? <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /> : ''}</a>
-                <a href={renderAllUrl(props.id,props.title_only, 0, props.kw)} className="view_more_guides">All {props.heading} {props.online_only? '' : <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} />}</a>
-            </footer>
-            
             </div>
-        : <div></div>
-        }
+        )
+    } else {
+        return null;
+    }
 
-        </div>
-    )
 }  

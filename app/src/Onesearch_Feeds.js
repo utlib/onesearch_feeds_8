@@ -58,7 +58,8 @@ class Onesearch_Feeds extends Component {
       next_most_format_id: '',
       drupal_list: [],
       site_search_completed: false,
-      search_button_pressed: false
+      search_button_pressed: false,
+      all_completed: false
     }
   }
 
@@ -125,6 +126,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
     this.setState({next_most_format_complete: false});
     this.setState({guides_completed: false});
     this.setState({site_search_completed: false});
+    this.setState({all_completed: false});
 
     var kw_encoded = encodeURIComponent(this.state.kw);
 
@@ -167,42 +169,48 @@ renderFormatUrl = (title_only, online_only,kw) => {
       }
       let res = await this.callAxios(url);
       var formats_list = res.data.values;
-      if (this.state.books_enabled) {
-        var books_idx = formats_list.findIndex(x => x.id == '6962');
-        if (books_idx !== -1) {
-          formats_list.splice(books_idx,1);
+      if (formats_list != undefined) {
+        if (this.state.books_enabled) {
+          var books_idx = formats_list.findIndex(x => x.id == '6962');
+          if (books_idx !== -1) {
+            formats_list.splice(books_idx,1);
+          }
         }
+        if (this.state.journal_enabled) {
+          var journal_idx = formats_list.findIndex(x => x.id == '206416');
+          if (journal_idx !== -1) {
+            formats_list.splice(journal_idx,1);
+          }
+  
+          var second_journal_idx = formats_list.findIndex(x => x.id == '6979');
+          if (second_journal_idx !== -1) {
+            formats_list.splice(second_journal_idx,1);
+          }
+        }
+        
+        formats_list.sort(function (a, b) {
+          return b.count - a.count;
+        });
       }
-      if (this.state.journal_enabled) {
-        var journal_idx = formats_list.findIndex(x => x.id == '206416');
-        if (journal_idx !== -1) {
-          formats_list.splice(journal_idx,1);
-        }
 
-        var second_journal_idx = formats_list.findIndex(x => x.id == '6979');
-        if (second_journal_idx !== -1) {
-          formats_list.splice(second_journal_idx,1);
-        }
-      }
-      
-      formats_list.sort(function (a, b) {
-        return b.count - a.count;
-      });
       this.setState({format_complete: true});
 
-      this.setState({next_most_format: formats_list[0].name});
-      this.setState({next_most_format_id: formats_list[0].id});
-      formats_list.splice(0,1);
-      this.setState({other_format_list: formats_list});
-      if (this.state.is_local) {
-        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
-      } else {
-        var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, kw_encoded);
-      }
-      let res_most_format = await this.callAxios(url);
-      this.setState({next_most_format_count: res_most_format.data.result.numResults});
-        if (res_most_format.data.result.numResults > 0) {
-        this.setState({next_most_format_list: res_most_format.data.result.records});
+      //formats_list here refers to the formats list minus books / journals
+      if (formats_list != undefined && formats_list.length > 0) {
+        this.setState({next_most_format: formats_list[0].name});
+        this.setState({next_most_format_id: formats_list[0].id});
+        formats_list.splice(0,1);
+        this.setState({other_format_list: formats_list});
+        if (this.state.is_local) {
+          var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
+        } else {
+          var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, kw_encoded);
+        }
+        let res_most_format = await this.callAxios(url);
+        this.setState({next_most_format_count: res_most_format.data.result.numResults});
+          if (res_most_format.data.result.numResults > 0) {
+          this.setState({next_most_format_list: res_most_format.data.result.records});
+        }
       }
       this.setState({next_most_format_complete: true});
     }    
@@ -245,7 +253,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
       this.setState({drupal_list: res.data});
 
     }
-
+    this.setState({all_completed: true});
     this.setState({search_button_pressed: false});
  
   }
@@ -278,6 +286,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
   }
 
   render() {
+    console.log(this.state);
     return (
       <div className="App">
       <OnesearchProvider value={this.state}>
@@ -295,6 +304,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
             {(this.state.site_search_enabled && this.state.search_button_pressed && !this.state.site_search_completed)? <GenerateLoadingArea searchWhat={'Library Web Pages'} />: <SiteSearchBox items_list={this.state.drupal_list} kw={this.state.kw} />}
           </div>
         </div>
+        {(this.state.all_completed && document.getElementById('catalogue_list').children.length === 0 && document.getElementById('library_info').children.length === 0) && <div className='no_results'>No Results Found for <strong>{this.state.kw}</strong></div>}
         </OnesearchProvider>
         
       </div>

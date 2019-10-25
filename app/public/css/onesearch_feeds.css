@@ -39,3 +39,6 @@ div#result_area {
     border: 1px solid #ccc;
     padding: 4px 8px;
     font-size: 0.9em; }
+
+.no_results {
+  text-align: center; }
