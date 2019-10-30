@@ -17,10 +17,14 @@ onesearch_feeds_8.searchoptionsettings:
   options:
     _admin_route: TRUE
 onesearch_feeds_8.search_results:
-  path: '/onesearch'
+  path: '/onesearch/{kw}/{title_only}/{online_only}/{library_id}'
   defaults:
     _controller: '\Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::render_page'
     _title: 'Onesearch Results'
+    kw: ''
+    title_only: 0
+    online_only: 0
+    library_id: ''
   requirements:
     _permission: 'access content'
 onesearch_feeds_8.call_endeca:

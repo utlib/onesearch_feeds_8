@@ -17,25 +17,33 @@ const GenerateLoadingArea = (props) => {
 class Onesearch_Feeds extends Component {
   constructor(props) {
     super(props);
+    var settingsElement = document.querySelector('head > script[type="application/json"][data-drupal-selector="drupal-settings-json"], body > script[type="application/json"][data-drupal-selector="drupal-settings-json"]');
+    var drupal_settings_json = JSON.parse(settingsElement.textContent);
+
+    if (drupal_settings_json.kw_param !== '') {
+      var parameter_provided = true;
+    } else {
+      var parameter_provided = false;
+    }
 
     this.state = {
-      performSearch: this.performSearch,
-      kw: '',
-      is_local: 1,
-      items_per_block: '',
+      submitSearch: this.submitSearch,
+      kw: drupal_settings_json.kw_param,
+      is_local: drupal_settings_json.is_local,
+      items_per_block: drupal_settings_json.items_per_block,
       updateKW: this.updateKW,
       handleCheckBoxChange: this.handleCheckBoxChange,
-      books_enabled: false,
-      journal_enabled: false,
-      formats_enabled: false,
+      books_enabled: drupal_settings_json.books_enabled,
+      journal_enabled: drupal_settings_json.journal_enabled,
+      formats_enabled: drupal_settings_json.formats_enabled,
       render_books: false,
       render_journal: false,
-      site_search_enabled: false,
+      site_search_enabled: drupal_settings_json.site_search_enabled,
       next_most_format: '',
-      summon_enabled: 0,
+      summon_enabled: drupal_settings_json.summon_enabled,
       summon_count: 0,
       summon_completed: false,
-      guides_enabled: 0,
+      guides_enabled: drupal_settings_json.guides_enabled,
       books_completed: false,
       books_count: 0,
       books_result: [],
@@ -44,22 +52,25 @@ class Onesearch_Feeds extends Component {
       journal_completed: false,
       guides_result: [],
       guides_completed: false,
-      is_online_clicked: false,
-      is_title_only: false,
+      is_online_clicked: drupal_settings_json.online_only_param == 1,
+      is_title_only: drupal_settings_json.title_only_param == 1,
       other_format_list: [],
       format_complete: false,
       next_most_format_complete: false,
       next_most_format_list: [],
       next_most_format_count: 0,
-      libguides_site_id: '',
-      libguides_api_key: '',
-      libguides_group_id: '',
+      libguides_site_id: drupal_settings_json.libguides_site_id,
+      libguides_api_key: drupal_settings_json.libguides_api_key,
+      libguides_group_id: drupal_settings_json.libguides_group_id,
       summon_lists: [],
       next_most_format_id: '',
       drupal_list: [],
       site_search_completed: false,
       search_button_pressed: false,
-      all_completed: false
+      all_completed: false,
+      submitted_kw: '',
+      library_id: drupal_settings_json.library_id_param,
+      parameter_provided: parameter_provided
     }
   }
 
@@ -112,12 +123,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
     return axios.get(url);
   }
 
-  performSearch = async (e) => {
-    e.preventDefault();
-    var online_checked = e.target.onesearch_online.checked;
-    this.setState({is_online_clicked: online_checked});
-    var title_only_checked = e.target.onesearch_title_only.checked;
-    this.setState({is_title_only: title_only_checked});
+  doActualSearch = async(online_checked, title_only_checked) => {
     this.setState({search_button_pressed: true});
     this.setState({books_completed: false});
     this.setState({journal_completed: false});
@@ -127,6 +133,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
     this.setState({guides_completed: false});
     this.setState({site_search_completed: false});
     this.setState({all_completed: false});
+    this.setState({submitted_kw: this.state.kw});
 
     var kw_encoded = encodeURIComponent(this.state.kw);
 
@@ -258,6 +265,17 @@ renderFormatUrl = (title_only, online_only,kw) => {
  
   }
 
+  submitSearch = (e) => {
+    e.preventDefault();
+    var online_checked = e.target.onesearch_online.checked;
+
+    this.setState({is_online_clicked: online_checked});
+    var title_only_checked = e.target.onesearch_title_only.checked;
+    this.setState({is_title_only: title_only_checked});
+
+    this.doActualSearch(online_checked, title_only_checked);
+  }
+
   updateKW = (e) => {
     this.setState({kw : e.target.value});
   }
@@ -270,23 +288,12 @@ renderFormatUrl = (title_only, online_only,kw) => {
   }
 
   componentDidMount() {
-    var settingsElement = document.querySelector('head > script[type="application/json"][data-drupal-selector="drupal-settings-json"], body > script[type="application/json"][data-drupal-selector="drupal-settings-json"]');
-    var drupal_settings_json = JSON.parse(settingsElement.textContent);
-    this.setState({is_local: drupal_settings_json.is_local});
-    this.setState({items_per_block: drupal_settings_json.items_per_block});
-    this.setState({books_enabled: drupal_settings_json.books_enabled});
-    this.setState({journal_enabled: drupal_settings_json.journal_enabled});
-    this.setState({formats_enabled: drupal_settings_json.formats_enabled});
-    this.setState({guides_enabled: drupal_settings_json.guides_enabled});
-    this.setState({summon_enabled: drupal_settings_json.summon_enabled});
-    this.setState({site_search_enabled: drupal_settings_json.site_search_enabled});
-    this.setState({libguides_site_id: drupal_settings_json.libguides_site_id});
-    this.setState({libguides_api_key: drupal_settings_json.libguides_api_key});
-    this.setState({libguides_group_id: drupal_settings_json.libguides_group_id});
+     if (this.state.parameter_provided) {
+      this.doActualSearch(this.state.is_online_clicked, this.state.is_title_only);
+    }
   }
 
   render() {
-    console.log(this.state);
     return (
       <div className="App">
       <OnesearchProvider value={this.state}>
@@ -304,7 +311,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
             {(this.state.site_search_enabled && this.state.search_button_pressed && !this.state.site_search_completed)? <GenerateLoadingArea searchWhat={'Library Web Pages'} />: <SiteSearchBox items_list={this.state.drupal_list} kw={this.state.kw} />}
           </div>
         </div>
-        {(this.state.all_completed && document.getElementById('catalogue_list').children.length === 0 && document.getElementById('library_info').children.length === 0) && <div className='no_results'>No Results Found for <strong>{this.state.kw}</strong></div>}
+        {(this.state.all_completed && document.getElementById('catalogue_list').children.length === 0 && document.getElementById('library_info').children.length === 0) && <div className='no_results'>No Results Found for <strong>{this.state.submitted_kw}</strong></div>}
         </OnesearchProvider>
         
       </div>
