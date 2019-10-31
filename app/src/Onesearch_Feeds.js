@@ -54,6 +54,7 @@ class Onesearch_Feeds extends Component {
       guides_completed: false,
       is_online_clicked: drupal_settings_json.online_only_param == 1,
       is_title_only: drupal_settings_json.title_only_param == 1,
+      limit_to_library: drupal_settings_json.limit_by_library_checked == 1,
       other_format_list: [],
       format_complete: false,
       next_most_format_complete: false,
@@ -69,12 +70,13 @@ class Onesearch_Feeds extends Component {
       search_button_pressed: false,
       all_completed: false,
       submitted_kw: '',
-      library_id: drupal_settings_json.library_id_param,
-      parameter_provided: parameter_provided
+      parameter_provided: parameter_provided,
+      enable_limit_results_library: drupal_settings_json.limit_endeca_result,
+      library_id: drupal_settings_json.library_group_id
     }
   }
 
-  renderAllUrl = (id, title_only, online_only,kw) => {
+  renderAllUrl = (id, title_only, online_only,kw,n_keyword_param) => {
     var nTx = 'mode+matchallpartial';
     if (title_only) {
         var nTk = 'Title';
@@ -93,21 +95,37 @@ class Onesearch_Feeds extends Component {
     }
 
     if (online_only) {
-        var n_keyword = id+'+207006';
+        if (n_keyword_param !== 0) {
+          var n_keyword = id+'+'+n_keyword_param+'+207006';
+        } else {
+          var n_keyword = id+'+207006';
+        }
+        
     } else {
-        var n_keyword = id;
+      var n_keyword = n_keyword_param;
     }
+
 
     var url = `https://search.library.utoronto.ca/search?Ntx=${nTx}&Nu=p_work_normalized&N=${n_keyword}&Np=1&Ntt=${kw}&Ntk=${nTk}&format=json&results=${this.state.items_per_block}`;
     return url;
 }
 
-renderFormatUrl = (title_only, online_only,kw) => {
+renderFormatUrl = (title_only, online_only,kw,n_keyword_param) => {
 
   if (online_only) {
-    var n_keyword  = '0+207006';
+    if (n_keyword_param !== 0) {
+      var n_keyword = n_keyword_param+'+207006';
+    } else {
+      var n_keyword  = '0+207006';
+    }
+    
   } else {
-    var n_keyword = '0';
+    if (n_keyword_param !== 0) {
+      var n_keyword 
+    } else {
+      var n_keyword = '0';
+    }
+    
   }
 
   if (title_only) {
@@ -123,7 +141,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
     return axios.get(url);
   }
 
-  doActualSearch = async(online_checked, title_only_checked) => {
+  doActualSearch = async(online_checked, title_only_checked, limit_library_check) => {
     this.setState({search_button_pressed: true});
     this.setState({books_completed: false});
     this.setState({journal_completed: false});
@@ -137,11 +155,17 @@ renderFormatUrl = (title_only, online_only,kw) => {
 
     var kw_encoded = encodeURIComponent(this.state.kw);
 
+    if (this.state.enable_limit_results_library && limit_library_check) {
+      var n_keyword = this.state.library_id;
+    } else {
+      var n_keyword = 0;
+    }
+
     if (this.state.books_enabled) {
       if (this.state.is_local) {
-        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/6962`;
+        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${n_keyword}/6962`;
       } else {
-        var url = this.renderAllUrl('6962',title_only_checked, online_checked, kw_encoded);
+        var url = this.renderAllUrl('6962',title_only_checked, online_checked, kw_encoded, n_keyword);
       }
 
       let res = await this.callAxios(url);
@@ -155,9 +179,9 @@ renderFormatUrl = (title_only, online_only,kw) => {
 
     if (this.state.journal_enabled) {
       if (this.state.is_local) {
-        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/206416`;
+        var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${n_keyword}/206416`;
       } else {
-        var url = this.renderAllUrl('206416',title_only_checked, online_checked, kw_encoded);
+        var url = this.renderAllUrl('206416',title_only_checked, online_checked, kw_encoded,n_keyword);
       }
       let res = await this.callAxios(url);
       this.setState({journal_completed: true});
@@ -170,9 +194,9 @@ renderFormatUrl = (title_only, online_only,kw) => {
 
     if(this.state.formats_enabled) {
       if (this.state.is_local) {
-        var url = `/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}`;
+        var url = `/api/formats_list/${this.state.kw}/${online_checked}/${title_only_checked}/${n_keyword}`;
       } else {
-        var url = this.renderFormatUrl(title_only_checked, online_checked, kw_encoded);
+        var url = this.renderFormatUrl(title_only_checked, online_checked, kw_encoded,n_keyword);
       }
       let res = await this.callAxios(url);
       var formats_list = res.data.values;
@@ -209,9 +233,9 @@ renderFormatUrl = (title_only, online_only,kw) => {
         formats_list.splice(0,1);
         this.setState({other_format_list: formats_list});
         if (this.state.is_local) {
-          var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${this.state.next_most_format_id}`;
+          var url = `/api/call_endeca/${this.state.kw}/${online_checked}/${title_only_checked}/${n_keyword}/${this.state.next_most_format_id}`;
         } else {
-          var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, kw_encoded);
+          var url = this.renderAllUrl(this.state.next_most_format_id,title_only_checked, online_checked, kw_encoded,n_keyword);
         }
         let res_most_format = await this.callAxios(url);
         this.setState({next_most_format_count: res_most_format.data.result.numResults});
@@ -272,8 +296,14 @@ renderFormatUrl = (title_only, online_only,kw) => {
     this.setState({is_online_clicked: online_checked});
     var title_only_checked = e.target.onesearch_title_only.checked;
     this.setState({is_title_only: title_only_checked});
+  
+    if (this.state.enable_limit_results_library) {
+      var limit_library_check = e.target.limit_results_library.checked;
+    } else {
+      var limit_library_check = false;
+    }
 
-    this.doActualSearch(online_checked, title_only_checked);
+    this.doActualSearch(online_checked, title_only_checked, limit_library_check);
   }
 
   updateKW = (e) => {
@@ -289,7 +319,7 @@ renderFormatUrl = (title_only, online_only,kw) => {
 
   componentDidMount() {
      if (this.state.parameter_provided) {
-      this.doActualSearch(this.state.is_online_clicked, this.state.is_title_only);
+      this.doActualSearch(this.state.is_online_clicked, this.state.is_title_only, this.state.limit_to_library);
     }
   }
 

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OnesearchFeeds8Controller extends ControllerBase {
 
-    public function render_page($kw, $title_only, $online_only, $library_id) {
+    public function render_page($kw, $title_only, $online_only, $limit_by_library) {
         $config = \Drupal::config('onesearch_feeds_8.searchoptionsettings');
         
         $books_enabled = $config->get('onesearch_feeds_8_books_enabled');
@@ -25,21 +25,25 @@ class OnesearchFeeds8Controller extends ControllerBase {
         $libguides_api_key = $admin_config->get('onesearch_feeds_8_libguides_api_key');
         $libguides_group_id = $admin_config->get('onesearch_feeds_8_libguides_group_id');
 
+        $limit_endeca_result = $admin_config->get('onesearch_feeds_8_search_within_library');
+        $library_group_id = $admin_config->get('onesearch_feeds_8_library_id');
+        
         return [
             '#attached' => [
-                'drupalSettings' => ['kw_param'=>$kw, 'title_only_param' => $title_only, 'online_only_param' => $online_only, 'library_id_param' => $library_id, 'is_local' => $is_local, 'items_per_block' => $items_per_block, 'summon_enabled' => $summon_enabled, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'site_search_enabled' => $site_search_enabled , 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
+                'drupalSettings' => ['kw_param'=>$kw, 'title_only_param' => $title_only, 'online_only_param' => $online_only, 'limit_by_library_checked' => $limit_by_library, 'is_local' => $is_local, 'items_per_block' => $items_per_block, 'limit_endeca_result' => $limit_endeca_result,'library_group_id' => $library_group_id, 'summon_enabled' => $summon_enabled, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'site_search_enabled' => $site_search_enabled , 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
                 'library' =>  ['onesearch_feeds_8/react-dev', 'onesearch_feeds_8/onesearch']
             ],
             '#theme' => 'onesearch_results'
         ];
     }
 
-    public function endeca_call($kw, $online, $title_only, $format) {
+    public function endeca_call($kw, $online, $title_only, $n_keyword_param, $format) {
         header('Access-Control-Allow-Origin: *');  
+
         if ($online === 'true') {
-            $n_keyword = '0+207006+'.$format;
+            $n_keyword = $n_keyword_param.'+207006+'.$format;
         } else {
-            $n_keyword = '0+'.$format;
+            $n_keyword = $n_keyword_param.'+'.$format;
         }
 
         $kw = urlencode($kw);
@@ -80,13 +84,13 @@ class OnesearchFeeds8Controller extends ControllerBase {
         return new JsonResponse(json_decode($data));
     }
 
-    public function formats($kw, $online, $title_only) {
+    public function formats($kw, $online, $title_only, $n_keyword_param) {
         header('Access-Control-Allow-Origin: *');  
         $kw = urlencode($kw);
         if ($online === 'true') {
-            $n_keyword = '0+207006';
+            $n_keyword = $n_keyword_param.'+207006';
         } else {
-            $n_keyword = '0';
+            $n_keyword = $n_keyword_param;
         }
     
         if ($title_only === 'true') {

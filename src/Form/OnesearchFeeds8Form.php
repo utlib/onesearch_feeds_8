@@ -79,6 +79,23 @@ class OnesearchFeeds8Form extends ConfigFormBase {
             '#description' => t('Our libGuides Group ID')
         );
     
+        $form['onesearch_feeds_8_search_within_library'] = array( 
+            '#title' => t('Enable option to limit catalogue search results from this library only'),  
+            '#type' => 'checkbox',
+            '#default_value' => $config->get('onesearch_feeds_8_search_within_library',0),
+            '#description' => t('For library sites only')
+        );
+        $form['onesearch_feeds_8_library_id'] = array(
+            '#title' => t('Endeca Library ID'),  
+            '#type' => 'textfield',
+            '#size' => '15',
+            '#states' => [
+                'visible' => [
+                    ':input[name="limit_search_library"]' => array('checked' => TRUE)
+                ]
+            ],
+            '#default_value' => $config->get('onesearch_feeds_8_library_id', 0)
+        );
 
         return parent::buildForm($form, $form_state);  
     }  
@@ -88,7 +105,6 @@ class OnesearchFeeds8Form extends ConfigFormBase {
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
         parent::submitForm($form, $form_state);
-
         $this->config('onesearch_feeds_8.adminsettings')
         ->set('onesearch_feeds_8_number_of_articles', $form_state->getValue('onesearch_feeds_8_number_of_articles'))
         ->set('onesearch_feeds_8_is_local_env', $form_state->getValue('onesearch_feeds_8_is_local_env'))
@@ -96,6 +112,8 @@ class OnesearchFeeds8Form extends ConfigFormBase {
         ->set('onesearch_feeds_8_libguides_api_key', $form_state->getValue('onesearch_feeds_8_libguides_api_key'))
         ->set('onesearch_feeds_8_libguides_site_id', $form_state->getValue('onesearch_feeds_8_libguides_site_id'))
         ->set('onesearch_feeds_8_libguides_group_id', $form_state->getValue('onesearch_feeds_8_libguides_group_id'))
+        ->set('onesearch_feeds_8_search_within_library', $form_state->getValue('onesearch_feeds_8_search_within_library'))
+        ->set('onesearch_feeds_8_library_id', $form_state->getValue('onesearch_feeds_8_library_id'))
         ->save();
     }
 }

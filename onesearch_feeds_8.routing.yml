@@ -17,18 +17,18 @@ onesearch_feeds_8.searchoptionsettings:
   options:
     _admin_route: TRUE
 onesearch_feeds_8.search_results:
-  path: '/onesearch/{kw}/{title_only}/{online_only}/{library_id}'
+  path: '/onesearch/{kw}/{title_only}/{online_only}/{limit_by_library}'
   defaults:
     _controller: '\Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::render_page'
     _title: 'Onesearch Results'
     kw: ''
     title_only: 0
     online_only: 0
-    library_id: ''
+    limit_by_library: 0
   requirements:
     _permission: 'access content'
 onesearch_feeds_8.call_endeca:
-  path: '/api/call_endeca/{kw}/{online}/{title_only}/{format}'
+  path: '/api/call_endeca/{kw}/{online}/{title_only}/{n_keyword_param}/{format}'
   defaults:
     _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::endeca_call'
     _title: 'JSON api'
@@ -36,7 +36,7 @@ onesearch_feeds_8.call_endeca:
   requirements:
     _access: 'TRUE'
 onesearch_feeds_8.formats:
-  path: '/api/formats_list/{kw}/{online}/{title_only}'
+  path: '/api/formats_list/{kw}/{online}/{title_only}/{n_keyword_param}'
   defaults:
     _controller: 'Drupal\onesearch_feeds_8\Controller\OnesearchFeeds8Controller::formats'
     _title: 'JSON api'
