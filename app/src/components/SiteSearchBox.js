@@ -15,6 +15,9 @@ export const SiteSearchBox = (props) => {
                     {props.items_list.map((item, index) => <li key={index}> <a href={item.alias}>{item.title}</a> <br /> <span dangerouslySetInnerHTML={{__html: item.excerpt}} /></li>)}
     
                 </ul>
+                <footer>
+                <a href={`/search/node?keys=${props.kw}`} className="view_more_guides">See all site search results for {props.kw}</a>
+                </footer>
             </div>
         )
     } else {
