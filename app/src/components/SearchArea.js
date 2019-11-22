@@ -7,7 +7,7 @@ class SearchArea extends Component {
                 {(context) => {
                     return (
                         <div>
-                            <h2>Your Search</h2>
+                            <h1 class="title">Search Canada-Hong Kong Library</h1>
                             <form onSubmit={context.submitSearch} id="searchArea">
                                 <input className="onesearch_input form-control" id="onesearch-query-front" name="onesearch-query" placeholder="Find books, ebooks, articles, journals, more" type="text" value={context.kw} onChange={context.updateKW} />
                                 <input className="searchButton allButton" id="onesearch-submit" name="onesearch-submit" type="submit" value="Search" />

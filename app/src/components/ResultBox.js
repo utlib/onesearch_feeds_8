@@ -40,7 +40,7 @@ export const ResultBox = (props) => {
                 <div className="result-box" id="book_results">
                 <header>
                     <div>
-                        <h2>{ props.is_online ? 'Online': ''} {props.heading} <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></h2>
+                        <h2><a href={renderAllUrl(props.id,props.title_only, 0, props.kw)} className="" title="View all">{ props.is_online ? 'Online': ''} {props.heading} <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></a></h2>
                     </div>
                 </header>
                 <ul>

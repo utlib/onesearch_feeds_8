@@ -10,12 +10,12 @@ export const ArticlesBox = (props) => {
                 <div className="result-box" id="guides_results">
                 <header>
                     <div>
-                        <h2>Articles <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></h2>
+                        <h2><a href={`http://query.library.utoronto.ca/index.php/search/q?kw=${props.kw}&facet[0]=addFacetValueFilters(ContentType,Journal+Article)${props.is_online? '&fulltext=1': ''}`} className="" title="View all articles">Articles <NumberFormat value={props.items_count} displayType={'text'} thousandSeparator={true} /></a></h2>
                     </div>
                 </header>
                 <ul>
                     {props.items_list.map((item, index) => <li key={index}>
-                    <a href={item.link}>{item.Title[0]}</a> <br /> 
+                    <div className='title'><a href={item.link}>{item.Title[0]}</a></div> 
                     <span className='authors'>{item.Author && `by ${item.Author.join(' and ')}.`}</span>
                     <span>{item.PublicationTitle && `${item.PublicationTitle[0]}, `} </span>
                     <span>{item.PublicationYear && `${item.PublicationYear[0]}, `}</span> 

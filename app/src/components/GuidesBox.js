@@ -8,7 +8,7 @@ export const GuidesBox = (props) => {
                 <div className="result-box" id="guides_results">
                 <header>
                     <div>
-                        <h2>Research Guides</h2>
+                        <h2><a href={`http://guides.library.utoronto.ca/srch.php?q=${props.kw}`} className="">Research Guides</a></h2>
                     </div>
                 </header>
                 <ul>

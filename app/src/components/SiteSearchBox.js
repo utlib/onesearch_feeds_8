@@ -8,7 +8,7 @@ export const SiteSearchBox = (props) => {
             <div className="box" id="site_search">
                 <header>
                     <div>
-                        <h2>Library Web Pages</h2>
+                        <h2><a href={`/search/node?keys=${props.kw}`} className="view_more_guides" title="See all site search results">Library Web Pages</a></h2>
                     </div>
                 </header>
                 <ul>
