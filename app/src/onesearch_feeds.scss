@@ -1,56 +1,159 @@
-label {
+.title {
+    margin-bottom: 50px;
+  }
+  
+  label {
     display: inline-block !important;
     max-width: 100%;
     margin-bottom: 5px;
     font-weight: 400 !important;
-}
-
-div#result_area {
+  }
+  
+  #searchArea {
+    position: relative;
+  }
+  
+  .path-onesearch .searchButton {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0px !important;
+    margin-top: 0 !important;
+  }
+  
+  .box {
+    margin-top: 50px;
+    float: left;
+  }
+  
+  div#result_area {
     display: flex;
-
-    div#catalogue_list{
-        flex-basis:70%;
+    width: 100%;
+    flex-wrap: wrap;
+  
+    div {
+      &#catalogue_list {
+        flex: 60%;
         flex-grow: 0;
         flex-shrink: 0;
-    }
-
-    div#library_info {
-        flex-basis: 28%;
+        padding-right: 5%;
+      }
+  
+      &#library_info {
+        flex: 40%;
         flex-grow: 0;
         flex-shrink: 0;
+      }
     }
-}
-
-.box {
-    h2 span {
-        font-size: .7em !important;
-        color: black;
+  }
+  
+  .box {
+    h2 {
+      font-size: 1.75em !important;
+      color: black;
+      padding-bottom: 15px;
+      width: 100%;
+  
+      span {
+        font-size: .75em;
+        margin-left: 15px;
+      }
+  
+      a {
+        color: #002a5c;
+      }
     }
+  
+    ul {
+      padding: 0;
+    }
+  
+    .title {
+      border-bottom: 0;
+      padding: 0 0 4px;
+      margin: 0;
+      font-size: 1.1em;
+      line-height: 1.4em;
+    }
+  
     li {
-        list-style-type: none;
-        margin: 5px 0;
-        padding: 5px 0;
-        clear: both;
-        width: 100%;
-        .authors {
-            display: block;
-        }
+      list-style-type: none;
+      margin: 5px 0;
+      padding: 5px 0;
+      clear: both;
+      width: 100%;
+  
+      .authors {
+        display: block;
+      }
     }
+  
     footer {
-        padding: 4px 0px;
-        margin-top: auto;
-        margin-bottom: 10px;
-        width: 100%;
-        text-align: right;
-        a {
-            background: whitesmoke;
-            border: 1px solid #ccc;
-            padding: 4px 8px;
-            font-size: 0.9em;
-        } 
+      padding: 4px 0px;
+      margin-top: auto;
+      margin-bottom: 10px;
+      width: 100%;
+      float: left;
+      margin-bottom: 30psx;
+      text-align: left;
+  
+      a {
+        background: whitesmoke;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        font-size: 1.1em;
+        margin: 10px 7px 0 0;
+        transition: 0.3s;
+  
+        &:hover {
+          background: #002a5c;
+          color: white;
+          text-decoration: none;
+        }
+      }
     }
-}
-
-.no_results {
-    text-align : center;
-}
+  }
+  
+  .no_results {
+    text-align: center;
+  }
+  
+  @media (max-width: 767px) {
+    div#result_area div {
+      &#catalogue_list, &#library_info {
+        flex: 100%;
+      }
+    }
+  
+    .box {
+      .title {
+        font-size: 1em;
+      }
+  
+      footer a {
+        float: left;
+        clear: both;
+        padding: 5px;
+        margin: 10px 0;
+      }
+  
+      margin-top: 15px;
+    }
+  
+    #main-wrapper {
+      padding: 20px !important;
+    }
+  
+    .title {
+      border-bottom: 0;
+      margin-bottom: 25px;
+      font-size: 1.25em;
+    }
+  
+    .path-onesearch input[type="text"] {
+      height: 40px !important;
+    }
+  
+    div#result_area div#catalogue_list {
+      padding-right: 0;
+    }
+  }
