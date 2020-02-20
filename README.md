@@ -11,12 +11,12 @@ Under 'repositories', please add following:
 ```
       { 
           "type": "vcs",
-          "url": "git@git.library.utoronto.ca:central-library-services/onesearch_feeds_8.git"
+          "url": "https://github.com/utlib/onesearch_feeds_8.git"
       },
 ```
 and add the following line under `require`
 ```
-"central-library-services/onesearch_feeds_8": "dev-master#{git commit hash}",
+"utlib/onesearch_feeds_8": "dev-master#{git commit hash}",
 ```
 
 git commit hash for the `master` branch can be found at `Repository > Commits` at Gitlab repository.
