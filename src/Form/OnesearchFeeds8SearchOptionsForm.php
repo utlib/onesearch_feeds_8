@@ -117,7 +117,6 @@ class OnesearchFeeds8SearchOptionsForm extends ConfigFormBase {
             '#type' => 'textfield',
             '#size' => '60',
             '#placeholder' => 'Enter machine name of search index defined in Search API',
-            '#required' => TRUE,
             '#states' => [
                 'visible' => [
                     ':input[name="drupal_enabled"]' => array('checked' => TRUE)
