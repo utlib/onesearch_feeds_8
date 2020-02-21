@@ -84,3 +84,16 @@ Copy and paste the part `onesearch_feeds_8_books_enabled` to (1) and click save.
 
 Then do drush cex, add / commit / push to git to push to the production
 
+## Working with the module
+
+### React + CSS Parts
+Run `npm install` from `/app` directory
+
+React + SCSS files are found in `/app/src` directory
+
+Run `npm run watch-css` to compile scss every time there are changes.
+
+For React change, after change / save JS file, run `npm run build` to compile JS file.
+
+### Drupal module files
+Don't forget to run `drush cr` after save!
