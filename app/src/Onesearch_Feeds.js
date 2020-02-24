@@ -72,7 +72,8 @@ class Onesearch_Feeds extends Component {
       submitted_kw: '',
       parameter_provided: parameter_provided,
       enable_limit_results_library: drupal_settings_json.limit_endeca_result,
-      library_id: drupal_settings_json.library_group_id
+      library_id: drupal_settings_json.library_group_id,
+      site_name: drupal_settings_json.site_name
     }
   }
 
@@ -228,8 +229,10 @@ renderFormatUrl = (title_only, online_only,kw,n_keyword_param) => {
 
       //formats_list here refers to the formats list minus books / journals
       if (formats_list != undefined && formats_list.length > 0) {
-        this.setState({next_most_format: formats_list[0].name});
-        this.setState({next_most_format_id: formats_list[0].id});
+        this.setState({
+          next_most_format: formats_list[0].name,
+          next_most_format_id: formats_list[0].id
+        });
         formats_list.splice(0,1);
         this.setState({other_format_list: formats_list});
         if (this.state.is_local) {
@@ -248,8 +251,9 @@ renderFormatUrl = (title_only, online_only,kw,n_keyword_param) => {
 
     if(this.state.guides_enabled) {
       axios.get(`//lgapi-ca.libapps.com/1.1/guides?search_match=2&status=1&site_id=${this.state.libguides_site_id}&key=${this.state.libguides_api_key}&search_terms=${kw_encoded}`).then((res) => {
-      this.setState({guides_completed: true});
-      this.setState({guides_result: res.data.splice(0,this.state.items_per_block)});
+      this.setState({guides_completed: true,
+                    guides_result: res.data.splice(0,this.state.items_per_block)
+      });
       })
     }
 
@@ -272,9 +276,11 @@ renderFormatUrl = (title_only, online_only,kw,n_keyword_param) => {
         var url = `https://query.library.utoronto.ca/index.php/search/json?kw=${kw_summon}&num_results=${this.state.items_per_block}&facet[0]=addFacetValueFilters(ContentType,Journal+Article)${fulltext}`;
       }
       let res = await this.callAxios(url);
-      this.setState({summon_completed: true});
-      this.setState({summon_lists: res.data.documents});
-      this.setState({summon_count: res.data.recordCount});
+      this.setState({
+        summon_completed: true,
+        summon_lists: res.data.documents,
+        summon_count: res.data.recordCount
+      });
     }
 
     if(this.state.site_search_enabled) {

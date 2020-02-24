@@ -27,10 +27,13 @@ class OnesearchFeeds8Controller extends ControllerBase {
 
         $limit_endeca_result = $admin_config->get('onesearch_feeds_8_search_within_library');
         $library_group_id = $admin_config->get('onesearch_feeds_8_library_id');
+
+        $system_site_config = \Drupal::config('system.site');
+        $site_name = $system_site_config->get('name');
         
         return [
             '#attached' => [
-                'drupalSettings' => ['kw_param'=>$kw, 'title_only_param' => $title_only, 'online_only_param' => $online_only, 'limit_by_library_checked' => $limit_by_library, 'is_local' => $is_local, 'items_per_block' => $items_per_block, 'limit_endeca_result' => $limit_endeca_result,'library_group_id' => $library_group_id, 'summon_enabled' => $summon_enabled, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'site_search_enabled' => $site_search_enabled , 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
+                'drupalSettings' => ['site_name' => $site_name, 'kw_param'=>$kw, 'title_only_param' => $title_only, 'online_only_param' => $online_only, 'limit_by_library_checked' => $limit_by_library, 'is_local' => $is_local, 'items_per_block' => $items_per_block, 'limit_endeca_result' => $limit_endeca_result,'library_group_id' => $library_group_id, 'summon_enabled' => $summon_enabled, 'books_enabled' => $books_enabled, 'journal_enabled' => $journal_enabled, 'guides_enabled' => $guides_enabled, 'formats_enabled' => $formats_enabled, 'site_search_enabled' => $site_search_enabled , 'libguides_site_id' => $libguides_site_id, 'libguides_api_key' => $libguides_api_key, 'libguides_group_id' => $libguides_group_id ],
                 'library' =>  ['onesearch_feeds_8/react-dev', 'onesearch_feeds_8/onesearch']
             ],
             '#theme' => 'onesearch_results'
